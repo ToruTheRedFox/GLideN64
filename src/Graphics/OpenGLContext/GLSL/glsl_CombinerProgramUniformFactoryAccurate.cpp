@@ -81,24 +81,13 @@ public:
 		}
 		float tcbounds[2][4] = {};
 		if (useTexCoordBounds) {
-			f32 uls, lrs, ult, lrt, S, T;
 			for (int t = 0; t < 2; t++) {
-				const CachedTexture * _pTexture = textureCache().current[t];
-				if (_pTexture != nullptr) {
-					S = _FIXED2FLOAT(gDP.lastTexRectInfo.s, 5);
-					T = _FIXED2FLOAT(gDP.lastTexRectInfo.t, 5);
-					uls = S + (ceilf(gDP.lastTexRectInfo.ulx) - gDP.lastTexRectInfo.ulx) * gDP.lastTexRectInfo.dsdx;
-					lrs = S + (ceilf(gDP.lastTexRectInfo.lrx) - gDP.lastTexRectInfo.ulx - 1.0f) * gDP.lastTexRectInfo.dsdx;
-					ult = T + (ceilf(gDP.lastTexRectInfo.uly) - gDP.lastTexRectInfo.uly) * gDP.lastTexRectInfo.dtdy;
-					lrt = T + (ceilf(gDP.lastTexRectInfo.lry) - gDP.lastTexRectInfo.uly - 1.0f) * gDP.lastTexRectInfo.dtdy;
-					tcbounds[t][0] = fmin(uls, lrs);
-					tcbounds[t][1] = fmin(ult, lrt);
-					tcbounds[t][2] = fmax(uls, lrs);
-					tcbounds[t][3] = fmax(ult, lrt);
-				}
+				tcbounds[t][0] = gDP.m_texCoordBounds.uls;
+				tcbounds[t][1] = gDP.m_texCoordBounds.ult;
+				tcbounds[t][2] = gDP.m_texCoordBounds.lrs;
+				tcbounds[t][3] = gDP.m_texCoordBounds.lrt;
 			}
 		}
-
 		uVertexOffset.set(vertexOffset, vertexOffset, _force);
 		uTexCoordOffset[0].set(texCoordOffset[0][0], texCoordOffset[0][1], _force);
 		uTexCoordOffset[1].set(texCoordOffset[1][0], texCoordOffset[1][1], _force);
