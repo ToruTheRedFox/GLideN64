@@ -45,25 +45,29 @@ public:
 				scale[0] = scale[1] = static_cast<float>(config.frameBufferEmulation.nativeResFactor);
 			}
 
+			float texCoordOffset0, texCoordOffset1;
+			if (config.frameBufferEmulation.nativeResFactor != 0) {
+				if (gDP.otherMode.textureFilter != G_TF_POINT && gDP.otherMode.cycleType != G_CYC_COPY) {
+					texCoordOffset0 = -0.5f * gDP.lastTexRectInfo.dsdx;
+					texCoordOffset1 = -0.5f * gDP.lastTexRectInfo.dtdy;
+				}
+				else {
+					texCoordOffset0 = (gDP.lastTexRectInfo.dsdx >= 0.0f ? -0.5f / scale[0] : -1.0f + 0.5f / scale[0]) * gDP.lastTexRectInfo.dsdx;
+					texCoordOffset1 = (gDP.lastTexRectInfo.dtdy >= 0.0f ? -0.5f / scale[1] : -1.0f + 0.5f / scale[1]) * gDP.lastTexRectInfo.dtdy;
+				}
+			}
+			else {
+				texCoordOffset0 = (gDP.lastTexRectInfo.dsdx >= 0.0f ? 0.0f : -1.0f) * gDP.lastTexRectInfo.dsdx;
+				texCoordOffset1 = (gDP.lastTexRectInfo.dtdy >= 0.0f ? 0.0f : -1.0f) * gDP.lastTexRectInfo.dtdy;
+				if (gDP.otherMode.textureFilter != G_TF_POINT && gDP.otherMode.cycleType != G_CYC_COPY) {
+					texCoordOffset0 -= 0.5f;
+					texCoordOffset1 -= 0.5f;
+				}
+			}
 			for (int t = 0; t < 2; t++) {
-				const CachedTexture* _pTexture = textureCache().current[t];
-				if (_pTexture != nullptr) {
-					if (config.frameBufferEmulation.nativeResFactor != 0) {
-						if (gDP.otherMode.textureFilter != G_TF_POINT && gDP.otherMode.cycleType != G_CYC_COPY) {
-							texCoordOffset[t][0] = -0.5f * gDP.lastTexRectInfo.dsdx;
-							texCoordOffset[t][1] = -0.5f * gDP.lastTexRectInfo.dtdy;
-						} else {
-							texCoordOffset[t][0] = (gDP.lastTexRectInfo.dsdx >= 0.0f ? -0.5f / scale[0] : -1.0f + 0.5f / scale[0]) * gDP.lastTexRectInfo.dsdx;
-							texCoordOffset[t][1] = (gDP.lastTexRectInfo.dtdy >= 0.0f ? -0.5f / scale[1] : -1.0f + 0.5f / scale[1]) * gDP.lastTexRectInfo.dtdy;
-						}
-					} else {
-						texCoordOffset[t][0] = (gDP.lastTexRectInfo.dsdx >= 0.0f ? 0.0f : -1.0f) * gDP.lastTexRectInfo.dsdx;
-						texCoordOffset[t][1] = (gDP.lastTexRectInfo.dtdy >= 0.0f ? 0.0f : -1.0f) * gDP.lastTexRectInfo.dtdy;
-						if (gDP.otherMode.textureFilter != G_TF_POINT && gDP.otherMode.cycleType != G_CYC_COPY) {
-							texCoordOffset[t][0] -= 0.5f;
-							texCoordOffset[t][1] -= 0.5f;
-						}
-					}
+				if (textureCache().current[t] != nullptr) {
+					texCoordOffset[t][0] = texCoordOffset0;
+					texCoordOffset[t][1] = texCoordOffset1;
 				}
 			}
 		}
@@ -79,21 +83,19 @@ public:
 				}
 			}
 		}
-		float tcbounds[2][4] = {};
+		float tcbounds[4] = {};
 		if (useTexCoordBounds) {
-			for (int t = 0; t < 2; t++) {
-				tcbounds[t][0] = gDP.m_texCoordBounds.uls;
-				tcbounds[t][1] = gDP.m_texCoordBounds.ult;
-				tcbounds[t][2] = gDP.m_texCoordBounds.lrs;
-				tcbounds[t][3] = gDP.m_texCoordBounds.lrt;
-			}
+			tcbounds[0] = gDP.m_texCoordBounds.uls;
+			tcbounds[1] = gDP.m_texCoordBounds.ult;
+			tcbounds[2] = gDP.m_texCoordBounds.lrs;
+			tcbounds[3] = gDP.m_texCoordBounds.lrt;
 		}
 		uVertexOffset.set(vertexOffset, vertexOffset, _force);
 		uTexCoordOffset[0].set(texCoordOffset[0][0], texCoordOffset[0][1], _force);
 		uTexCoordOffset[1].set(texCoordOffset[1][0], texCoordOffset[1][1], _force);
 		uUseTexCoordBounds.set(useTexCoordBounds ? 1 : 0, _force);
-		uTexCoordBounds0.set(tcbounds[0], _force);
-		uTexCoordBounds1.set(tcbounds[1], _force);
+		uTexCoordBounds0.set(tcbounds, _force);
+		uTexCoordBounds1.set(tcbounds, _force);
 
 		gDP.m_texCoordBounds.valid = false;
 	}
