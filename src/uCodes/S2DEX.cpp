@@ -538,11 +538,13 @@ struct ObjCoordinates
 			}
 		}
 
-		gDP.m_texCoordBounds.valid = true;
-		gDP.m_texCoordBounds.uls = uls;
-		gDP.m_texCoordBounds.lrs = lrs - 1.0;
-		gDP.m_texCoordBounds.ult = ult;
-		gDP.m_texCoordBounds.lrt = lrt - 1.0;
+		if (config.graphics2D.enableTexCoordBounds != 0) {
+			gDP.m_texCoordBounds.valid = true;
+			gDP.m_texCoordBounds.uls = uls;
+			gDP.m_texCoordBounds.lrs = lrs - 1.0;
+			gDP.m_texCoordBounds.ult = ult;
+			gDP.m_texCoordBounds.lrt = lrt - 1.0;
+		}
 
 		// BgRect1CycOnePiece() and BgRectCopyOnePiece() do only support
 		// imageFlip in horizontal direction
