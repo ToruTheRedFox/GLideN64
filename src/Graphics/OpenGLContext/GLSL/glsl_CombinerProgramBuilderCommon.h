@@ -49,7 +49,6 @@ private:
 	void _writeFragmentMain(std::stringstream& ssShader) const override;
 	void _writeFragmentBlendMux(std::stringstream& ssShader) const override;
 	void _writeShaderCoverage(std::stringstream& ssShader) const override;
-	void _writeFragmentCorrectTexCoords(std::stringstream& ssShader) const override;
 	void _writeFragmentReadTexMipmap(std::stringstream& ssShader) const override;
 	void _writeFragmentCallN64Depth(std::stringstream& ssShader) const override;
 	void _writeFragmentRenderTarget(std::stringstream& ssShader) const override;
@@ -90,7 +89,6 @@ private:
 	ShaderPartPtr m_fragmentMain;
 	ShaderPartPtr m_fragmentMain2Cycle;
 	ShaderPartPtr m_fragmentBlendMux;
-	ShaderPartPtr m_fragmentCorrectTexCoords;
 	ShaderPartPtr m_fragmentReadTexMipmap;
 	ShaderPartPtr m_fragmentCallN64Depth;
 	ShaderPartPtr m_fragmentRenderTarget;

@@ -84,6 +84,22 @@ public:
 	}
 };
 
+class ShaderFragmentCorrectTexCoords : public ShaderPart {
+public:
+	ShaderFragmentCorrectTexCoords() {
+		m_part +=
+			" highp vec2 mTexCoord0 = vTexCoord0 + vec2(0.0001);						\n"
+			" highp vec2 mTexCoord1 = vTexCoord1 + vec2(0.0001);						\n"
+			" mTexCoord0 += uTexCoordOffset;											\n"
+			" mTexCoord1 += uTexCoordOffset;											\n"
+			" if (uUseTexCoordBounds != 0) {											\n"
+			" mTexCoord0 = clamp(mTexCoord0, uTexCoordBounds.xy, uTexCoordBounds.zw);	\n"
+			" mTexCoord1 = clamp(mTexCoord1, uTexCoordBounds.xy, uTexCoordBounds.zw);	\n"
+			" }																			\n"
+			;
+	}
+};
+
 class ShaderFragmentGlobalVariablesTex : public ShaderPart
 {
 public:
@@ -1157,6 +1173,7 @@ namespace glsl {
 CombinerProgramBuilderAccurate::CombinerProgramBuilderAccurate(const opengl::GLInfo & _glinfo, opengl::CachedUseProgram * _useProgram)
 : CombinerProgramBuilderCommon(_glinfo, _useProgram, std::make_unique<CombinerProgramUniformFactoryAccurate>(_glinfo),
 	   std::make_unique<VertexShaderTexturedTriangle>(_glinfo))
+, m_fragmentCorrectTexCoords(new ShaderFragmentCorrectTexCoords())
 , m_fragmentGlobalVariablesTex(new ShaderFragmentGlobalVariablesTex(_glinfo))
 , m_fragmentHeaderTextureEngine(new ShaderFragmentHeaderTextureEngine(_glinfo))
 , m_fragmentHeaderReadMSTex(new ShaderFragmentHeaderReadMSTex(_glinfo))
@@ -1172,6 +1189,11 @@ CombinerProgramBuilderAccurate::CombinerProgramBuilderAccurate(const opengl::GLI
 , m_shaderReadtexCopyMode(new ShaderReadtexCopyMode(_glinfo))
 , m_shaderTextureEngine(new ShaderTextureEngine(_glinfo))
 {
+}
+
+void CombinerProgramBuilderAccurate::_writeFragmentCorrectTexCoords(std::stringstream& ssShader)const
+{
+	m_fragmentCorrectTexCoords->write(ssShader);
 }
 
 void CombinerProgramBuilderAccurate::_writeFragmentGlobalVariablesTex(std::stringstream& ssShader) const

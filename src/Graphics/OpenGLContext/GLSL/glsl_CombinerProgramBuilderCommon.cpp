@@ -1356,22 +1356,6 @@ public:
 	}
 };
 
-class ShaderFragmentCorrectTexCoords : public ShaderPart {
-public:
-	ShaderFragmentCorrectTexCoords() {
-		m_part +=
-			" highp vec2 mTexCoord0 = vTexCoord0 + vec2(0.0001);						\n"
-			" highp vec2 mTexCoord1 = vTexCoord1 + vec2(0.0001);						\n"
-			" mTexCoord0 += uTexCoordOffset;											\n"
-			" mTexCoord1 += uTexCoordOffset;											\n"
-			" if (uUseTexCoordBounds != 0) {											\n"
-			" mTexCoord0 = clamp(mTexCoord0, uTexCoordBounds.xy, uTexCoordBounds.zw);	\n"
-			" mTexCoord1 = clamp(mTexCoord1, uTexCoordBounds.xy, uTexCoordBounds.zw);	\n"
-			" }																			\n"
-			;
-	}
-};
-
 class ShaderCoverage : public ShaderPart {
 public:
 	ShaderCoverage() {
@@ -1446,7 +1430,6 @@ CombinerProgramBuilderCommon::CombinerProgramBuilderCommon(const opengl::GLInfo 
 , m_fragmentMain(new ShaderFragmentMain(_glinfo))
 , m_fragmentMain2Cycle(new ShaderFragmentMain2Cycle(_glinfo))
 , m_fragmentBlendMux(new ShaderFragmentBlendMux(_glinfo))
-, m_fragmentCorrectTexCoords(new ShaderFragmentCorrectTexCoords())
 , m_fragmentReadTexMipmap(new ShaderFragmentReadTexMipmap(_glinfo))
 , m_fragmentCallN64Depth(new ShaderFragmentCallN64Depth(_glinfo))
 , m_fragmentRenderTarget(new ShaderFragmentRenderTarget(_glinfo))
@@ -1627,11 +1610,6 @@ void CombinerProgramBuilderCommon::_writeFragmentBlendMux(std::stringstream& ssS
 void CombinerProgramBuilderCommon::_writeShaderCoverage(std::stringstream& ssShader)const
 {
 	 m_shaderCoverage->write(ssShader);
-}
-
-void CombinerProgramBuilderCommon::_writeFragmentCorrectTexCoords(std::stringstream& ssShader)const
-{
-	 m_fragmentCorrectTexCoords->write(ssShader);
 }
 
 void CombinerProgramBuilderCommon::_writeFragmentReadTexMipmap(std::stringstream& ssShader)const

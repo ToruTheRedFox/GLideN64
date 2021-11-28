@@ -17,6 +17,7 @@ private:
 	void _writeFragmentHeaderClampWrapMirrorEngine(std::stringstream& ssShader) const override;
 	void _writeFragmentClampWrapMirrorEngineTex0(std::stringstream& ssShader) const override;
 	void _writeFragmentClampWrapMirrorEngineTex1(std::stringstream& ssShader) const override;
+	void _writeFragmentCorrectTexCoords(std::stringstream& ssShader) const override;
 	void _writeFragmentReadTex0(std::stringstream& ssShader) const override;
 	void _writeFragmentReadTex1(std::stringstream& ssShader) const override;
 	void _writeFragmentReadTexCopyMode(std::stringstream& ssShader) const override;
@@ -34,6 +35,7 @@ private:
 	ShaderPartPtr m_fragmentReadTex1;
 	ShaderPartPtr m_fragmentClampWrapMirrorTex0;
 	ShaderPartPtr m_fragmentClampWrapMirrorTex1;
+	ShaderPartPtr m_fragmentCorrectTexCoords;
 	ShaderPartPtr m_fragmentReadTexCopyMode;
 	ShaderPartPtr m_shaderMipmap;
 	ShaderPartPtr m_shaderReadtex;
