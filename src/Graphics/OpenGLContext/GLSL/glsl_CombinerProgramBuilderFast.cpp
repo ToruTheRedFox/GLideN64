@@ -98,6 +98,40 @@ public:
 	}
 };
 
+class VertexShaderTexturedRectFast : public ShaderPart
+{
+public:
+	VertexShaderTexturedRectFast(const opengl::GLInfo & _glinfo)
+	{
+		m_part =
+			"IN highp vec4 aRectPosition;						\n"
+			"IN highp vec2 aTexCoord0;							\n"
+			"IN highp vec2 aTexCoord1;							\n"
+			"IN highp vec2 aBaryCoords;							\n"
+			"													\n"
+			"OUT highp vec2 vTexCoord0;							\n"
+			"OUT highp vec2 vTexCoord1;							\n"
+			"OUT lowp vec4 vShadeColor;							\n"
+			"OUT highp vec4 vBaryCoords;						\n"
+			;
+		if (!_glinfo.isGLESX || _glinfo.noPerspective)
+			m_part += "noperspective OUT lowp vec4 vShadeColorNoperspective;\n";
+		else
+			m_part += "OUT lowp vec4 vShadeColorNoperspective;				\n";
+		m_part +=
+			"uniform lowp vec4 uRectColor;						\n"
+			"void main()										\n"
+			"{													\n"
+			"  gl_Position = aRectPosition;						\n"
+			"  vShadeColor = uRectColor;						\n"
+			"  vShadeColorNoperspective = uRectColor;			\n"
+			"  vTexCoord0 = aTexCoord0;							\n"
+			"  vTexCoord1 = aTexCoord1;							\n"
+			"  vBaryCoords = vec4(aBaryCoords, vec2(1.0) - aBaryCoords);	\n"
+			;
+	}
+};
+
 class ShaderFragmentGlobalVariablesTexFast : public ShaderPart
 {
 public:
@@ -1106,8 +1140,9 @@ public:
 namespace glsl {
 
 CombinerProgramBuilderFast::CombinerProgramBuilderFast(const opengl::GLInfo & _glinfo, opengl::CachedUseProgram * _useProgram)
-: CombinerProgramBuilderCommon(_glinfo, _useProgram, std::make_unique<CombinerProgramUniformFactoryFast>(_glinfo),
-        std::make_unique<VertexShaderTexturedTriangleFast>(_glinfo))
+: CombinerProgramBuilderCommon(_glinfo, _useProgram, std::make_unique<CombinerProgramUniformFactoryFast>(_glinfo))
+, m_vertexTexturedTriangle(new VertexShaderTexturedTriangleFast(_glinfo))
+, m_vertexTexturedRect(new VertexShaderTexturedRectFast(_glinfo))
 , m_fragmentGlobalVariablesTex(new ShaderFragmentGlobalVariablesTexFast(_glinfo))
 , m_fragmentHeaderClampWrapMirror(new ShaderFragmentHeaderClampWrapMirror(_glinfo))
 , m_fragmentHeaderReadMSTex(new ShaderFragmentHeaderReadMSTexFast(_glinfo))
@@ -1124,6 +1159,16 @@ CombinerProgramBuilderFast::CombinerProgramBuilderFast(const opengl::GLInfo & _g
 , m_shaderReadtexCopyMode(new ShaderReadtexCopyModeFast(_glinfo))
 , m_shaderClampWrapMirror(new ShaderClampWrapMirror(_glinfo))
 {
+}
+
+const ShaderPart * CombinerProgramBuilderFast::getVertexShaderTexturedRect() const
+{
+	return m_vertexTexturedRect.get();
+}
+
+const ShaderPart * CombinerProgramBuilderFast::getVertexShaderTexturedTriangle() const
+{
+	return m_vertexTexturedTriangle.get();
 }
 
 void CombinerProgramBuilderFast::_writeFragmentGlobalVariablesTex(std::stringstream& ssShader) const

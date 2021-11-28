@@ -7,8 +7,7 @@ class CombinerProgramBuilderCommon : public glsl::CombinerProgramBuilder
 {
 public:
 	CombinerProgramBuilderCommon(const opengl::GLInfo & _glinfo, opengl::CachedUseProgram * _useProgram,
-		std::unique_ptr<CombinerProgramUniformFactory> _uniformFactory,
-		std::unique_ptr<ShaderPart> _vertexTexturedTriangle);
+		std::unique_ptr<CombinerProgramUniformFactory> _uniformFactory);
 	~CombinerProgramBuilderCommon();
 
 	const ShaderPart * getVertexShaderHeader() const override;
@@ -75,7 +74,6 @@ private:
 	ShaderPartPtr m_vertexHeader;
 	ShaderPartPtr m_vertexEnd;
 	ShaderPartPtr m_vertexRect;
-	ShaderPartPtr m_vertexTexturedRect;
 	ShaderPartPtr m_vertexTriangle;
 
 	ShaderPartPtr m_fragmentHeader;
@@ -104,10 +102,10 @@ private:
 
 	u32 m_combinerOptionsBits;
 
-	GLuint m_vertexShaderRect;
-	GLuint m_vertexShaderTriangle;
-	GLuint m_vertexShaderTexturedRect;
-	GLuint m_vertexShaderTexturedTriangle;
+	mutable GLuint m_vertexShaderRect = 0;
+	mutable GLuint m_vertexShaderTriangle = 0;
+	mutable GLuint m_vertexShaderTexturedRect = 0;
+	mutable GLuint m_vertexShaderTexturedTriangle = 0;
 };
 
 }
