@@ -13,7 +13,7 @@ public:
 		m_part =
 			"IN highp vec4 aPosition;							\n"
 			"IN lowp vec4 aColor;								\n"
-			"IN highp vec2 aTexCoord;							\n"
+			"centroid IN highp vec2 aTexCoord;							\n"
 			"IN lowp float aNumLights;							\n"
 			"IN highp vec4 aModify;								\n"
 			"IN highp vec2 aBaryCoords;							\n"

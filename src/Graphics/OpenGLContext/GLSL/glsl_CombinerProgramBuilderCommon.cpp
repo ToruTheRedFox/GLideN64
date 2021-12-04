@@ -102,7 +102,6 @@ public:
 			"    gl_Position.xy = floor(gl_Position.xy * vec2(4.0)) * vec2(0.25); \n"
 			"    gl_Position.xy = gl_Position.xy * uAdjustScale + gl_Position.ww * uAdjustTrans; \n"
 			"  }															\n"
-			"  glPosition.xyzw = floor(glPosition.xyzw*100)/100				\n"
 			"  if ((aModify[1]) != 0.0) 									\n"
 			"    gl_Position.z *= gl_Position.w;							\n"
 			"  if ((aModify[3]) != 0.0)										\n"

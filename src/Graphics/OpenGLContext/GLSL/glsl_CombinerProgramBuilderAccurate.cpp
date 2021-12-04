@@ -12,8 +12,8 @@ public:
 	{
 		m_part =
 			"IN highp vec4 aPosition;							\n"
-			"IN lowp vec4 aColor;								\n"
-			"IN highp vec2 aTexCoord;							\n"
+			"centroid IN lowp vec4 aColor;								\n"
+			"centroid IN highp vec2 aTexCoord;							\n"
 			"IN lowp float aNumLights;							\n"
 			"IN highp vec4 aModify;								\n"
 			"IN highp vec2 aBaryCoords;							\n"
@@ -223,10 +223,10 @@ public:
 
 		m_part +=
 			"IN lowp vec4 vShadeColor;		\n"
-			"IN highp vec2 vTexCoord;		\n"
-			"IN mediump vec2 vLodTexCoord;	\n"
+			"centroid IN highp vec2 vTexCoord;		\n"
+			"centroid IN mediump vec2 vLodTexCoord;	\n"
 			"IN lowp float vNumLights;		\n"
-			"IN highp vec4 vBaryCoords;		\n"
+			"centroid IN highp vec4 vBaryCoords;		\n"
 		;
 
 		if (_glinfo.dual_source_blending) {
@@ -279,11 +279,11 @@ public:
 	ShaderFragmentHeaderTextureEngine(const opengl::GLInfo & _glinfo)
 	{
 		m_part =
-			"highp vec2 clampWrapMirror(in highp vec2 vTexCoord,	\n"
+			"highp vec2 clampWrapMirror(centroid in highp vec2 vTexCoord,	\n"
 			"	in highp vec2 vWrap, in highp vec2 vClamp,			\n"
 			"	in lowp vec2 vClampEn, in lowp vec2 vMirrorEn );	\n"
-			"void textureEngine0(in highp vec2 texCoord, out highp vec2 tcData[5]); \n"
-			"void textureEngine1(in highp vec2 texCoord, out highp vec2 tcData[5]); \n"
+			"void textureEngine0(centroid in highp vec2 texCoord, out highp vec2 tcData[5]); \n"
+			"void textureEngine1(centroid in highp vec2 texCoord, out highp vec2 tcData[5]); \n"
 			;
 	}
 };

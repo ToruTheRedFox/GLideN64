@@ -443,7 +443,7 @@ void CVideoTab::LoadSettings(bool /*blockCustomSettings*/) {
 			HideMSAADepthWarning(false);
 			RedrawWindow();
 		}
-		DisallowMSAA(true);
+		DisallowMSAA(false);//DisallowMSAA(true);
 	}
 
 	CButton(GetDlgItem(IDC_NOAA_RADIO)).SetCheck(config.video.multisampling == 0 && config.video.fxaa == 0 ? BST_CHECKED : BST_UNCHECKED);
